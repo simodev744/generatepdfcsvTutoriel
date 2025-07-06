@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head(~{::title})">
+    <title>Dashboard</title>
+</head>
+<body class="leading-normal tracking-normal bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    <div th:replace="fragments/layout :: navbar"></div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-4xl font-bold mb-8 text-center text-gray-800">Admin Dashboard</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Products Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center justify-center">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Products</h2>
+                <p class="text-5xl font-bold text-blue-600 mb-4" th:text="${productCount}"></p>
+                <a href="/products" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out">
+                    Manage Products
+                </a>
+            </div>
+
+            <!-- Orders Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center justify-center">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Orders</h2>
+                <p class="text-5xl font-bold text-green-600 mb-4" th:text="${orderCount}"></p>
+                <a href="/orders" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out">
+                    Manage Orders
+                </a>
+            </div>
+
+            <!-- Invoices Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center justify-center">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Invoices</h2>
+                <p class="text-5xl font-bold text-purple-600 mb-4">0</p>
+                <a href="/invoices" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out">
+                    Manage Invoices
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Product Count</h2>
+                <canvas id="productChart"></canvas>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Order Count</h2>
+                <canvas id="orderChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const productCount = [[${productCount}]];
+        const orderCount = [[${orderCount}]];
+
+        // Product Chart
+        const productCtx = document.getElementById('productChart').getContext('2d');
+        new Chart(productCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Products'],
+                datasets: [{
+                    label: 'Number of Products',
+                    data: [productCount],
+                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        // Order Chart
+        const orderCtx = document.getElementById('orderChart').getContext('2d');
+        new Chart(orderCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Orders'],
+                datasets: [{
+                    label: 'Number of Orders',
+                    data: [orderCount],
+                    backgroundColor: 'rgba(34, 197, 94, 0.5)',
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

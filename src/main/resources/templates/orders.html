@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head(~{::title})">
+    <title>Orders</title>
+</head>
+<body class="leading-normal tracking-normal bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    <div th:replace="fragments/layout :: navbar"></div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-4xl font-bold mb-8 text-center text-gray-800">Order Management</h1>
+
+        <div class="mb-6 flex justify-between items-center">
+            <form action="/orders" method="get" class="flex items-center space-x-2">
+                <input type="text" name="search" placeholder="Search by customer name or email..." class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:value="${search}">
+                <input type="datetime-local" name="startDate" class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:value="${startDate != null ? #temporals.format(startDate, 'yyyy-MM-dd'T'HH:mm') : ''}">
+                <input type="datetime-local" name="endDate" class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:value="${endDate != null ? #temporals.format(endDate, 'yyyy-MM-dd'T'HH:mm') : ''}">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Search
+                </button>
+            </form>
+            <a href="/orders/new" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out">
+                Create New Order
+            </a>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full leading-normal">
+                <thead>
+                    <tr>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Customer Name
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Customer Email
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Total Amount
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Order Date
+                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap" th:text="${order.customerName}"></p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap" th:text="${order.customerEmail}"></p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 2, 'POINT')}"></p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap" th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></p>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <a th:href="@{/orders/edit/{id}(id=${order.id})}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                            <a th:href="@{/orders/delete/{id}(id=${order.id})}" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this order?');">Delete</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="5" class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center text-gray-500">
+                            No orders found.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
